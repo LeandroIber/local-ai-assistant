@@ -1,53 +1,36 @@
 # Local AI Assistant
 
-Assistente pessoal local usando Ollama + modelos open-source (como Qwen3) para receber informações e salvar dados automaticamente em planilhas Excel/CSV.
+Assistente pessoal que roda localmente e ajuda a organizar informações do dia a dia, como gastos, anotações e tarefas.
 
 ## Objetivo
 
-Criar um assistente conversacional local que:
-- Entende comandos em linguagem natural
-- Extrai informações estruturadas
-- Salva os dados em planilhas de forma automática
+Criar um assistente que entenda comandos em linguagem natural, extraia as informações importantes e salve esses dados de forma organizada em um banco de dados local.
 
-## Status do Projeto
+## Status atual
 
-🚧 Em desenvolvimento - Fase inicial (esqueleto)
+O projeto está em desenvolvimento. Até agora foi criada a estrutura básica e a ferramenta para registrar gastos.
 
 ## Tecnologias
 
-- Python 3.13+
-- Ollama (modelos locais)
-- Pandas + Openpyxl (manipulação de planilhas)
+- Python
+- Ollama
+- DuckDB
 
-## Estrutura do Projeto
+## Estrutura do projeto
 
-```
-local-ai-assistant/
-├── app/                  # Lógica principal
-├── data/                 # Planilhas geradas
-├── docs/
-├── main.py
-├── requirements.txt
-└── README.md
-```
+O projeto está organizado da seguinte forma:
 
-## Como usar (futuro)
+- app/: Contém a lógica principal do programa
+  - tools.py: Define as ferramentas que o assistente pode usar (ex: salvar gasto)
+  - database.py: Cuida da conexão e operações com o banco de dados
+  - ollama_client.py: Responsável pela comunicação com o Ollama e function calling
+- data/: Onde fica o banco de dados local (arquivo assistant.duckdb)
+- main.py: Ponto de entrada do programa, onde será criado o chat
+- requirements.txt: Lista de dependências do projeto
+
+## Como executar
 
 ```bash
-uv venv
-uv sync
-uv run main.py
-```
-
-## Roadmap
-
-- [ ] Esqueleto do projeto
-- [ ] Integração básica com Ollama
-- [ ] Function Calling + Tools
-- [ ] Interface simples (Gradio ou Terminal)
-- [ ] Salvamento automático em Excel
-- [ ] Múltiplas ferramentas (gastos, anotações, tarefas...)
-
-## Licença
-
-MIT License
+cd local-ai-assistant
+source .venv/bin/activate
+python app/tools.py
