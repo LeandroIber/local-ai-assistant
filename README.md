@@ -28,20 +28,16 @@ O maior desafio no momento é a velocidade das respostas e a precisão em consul
 
 ## Estrutura do projeto
 
-local-ai-assistant/
-├── main.py
-├── requirements.txt
-├── README.md
-├── app/
-│   ├── init.py
-│   ├── database.py
-│   ├── tools.py
-│   ├── ollama_client.py
-│   └── prompt.py
-├── data/
-│   └── assistant.duckdb
-└── docs/
+O projeto está organizado da seguinte forma:
 
+- `main.py`: Ponto de entrada do chat
+- `app/`: Contém a lógica principal do assistente
+  - `database.py`: Conexão com bd
+  - `tools.py`: Definição das ferramentas
+  - `ollama_client.py`: Comunicação com o Ollama
+  - `prompt.py`: Instruções do sistema
+- `data/`: BD
+- `docs/`: Documentação do projeto
 
 ## Como executar
 
