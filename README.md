@@ -1,36 +1,56 @@
 # Local AI Assistant
 
-Assistente pessoal que roda localmente e ajuda a organizar informações do dia a dia, como gastos, anotações e tarefas.
+Assistente pessoal que roda localmente e ajuda a organizar gastos e outras informações do dia a dia.
 
 ## Objetivo
 
-Criar um assistente que entenda comandos em linguagem natural, extraia as informações importantes e salve esses dados de forma organizada em um banco de dados local.
+Criar um assistente local que entenda comandos em linguagem natural, registre gastos de forma segura e consiga evoluir para gerenciar anotações, tarefas e compromissos.
 
-## Status atual
+## Status Atual
 
-O projeto está em desenvolvimento. Até agora foi criada a estrutura básica e a ferramenta para registrar gastos.
+O projeto está em desenvolvimento. Na versão atual já é possível registrar gastos com confirmação do usuário antes de salvar, listar os gastos registrados e conversar de forma básica com o assistente.
 
-## Tecnologias
+O maior desafio no momento é a velocidade das respostas e a precisão em consultas mais complexas, como resumos e agrupamentos de gastos.
+
+## O que já funciona
+
+- Registro de gastos com confirmação explícita antes de salvar
+- Listagem de gastos
+- Chat no terminal com medição de tempo de resposta
+- Sistema que evita salvar informações sem autorização do usuário
+
+## Tecnologias usadas
 
 - Python
-- Ollama
-- DuckDB
+- Ollama (para rodar o modelo de linguagem localmente)
+- DuckDB (banco de dados local)
+- Rich (para melhorar a interface no terminal)
 
 ## Estrutura do projeto
 
-O projeto está organizado da seguinte forma:
+local-ai-assistant/
+├── main.py
+├── requirements.txt
+├── README.md
+├── app/
+│   ├── init.py
+│   ├── database.py
+│   ├── tools.py
+│   ├── ollama_client.py
+│   └── prompt.py
+├── data/
+│   └── assistant.duckdb
+└── docs/
 
-- app/: Contém a lógica principal do programa
-  - tools.py: Define as ferramentas que o assistente pode usar (ex: salvar gasto)
-  - database.py: Cuida da conexão e operações com o banco de dados
-  - ollama_client.py: Responsável pela comunicação com o Ollama e function calling
-- data/: Onde fica o banco de dados local (arquivo assistant.duckdb)
-- main.py: Ponto de entrada do programa, onde será criado o chat
-- requirements.txt: Lista de dependências do projeto
 
 ## Como executar
 
-```bash
-cd local-ai-assistant
-source .venv/bin/activate
-python app/tools.py
+1. Ative o ambiente virtual:
+   source .venv/bin/activate
+text
+
+2. (Opcional) Defina o endereço do Ollama, caso não esteja usando o padrão:
+   export OLLAMA_HOST="http://localhost:11434"
+   
+3. Rode o assistente:
+   python main.py
