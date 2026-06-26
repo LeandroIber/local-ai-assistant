@@ -1,38 +1,49 @@
-# Python
+# Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 
-# Virtual Environment
-.venv/
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
 venv/
-ENV/
 env/
+ENV/
+.venv/
 
-# IDEs
-.vscode/
+# IDE files
 .idea/
+.vscode/
+*.swp
+*.swo
 
-# Database
-data/*.duckdb
-data/*.db
+# Logs
+logs/
+*.log
 
-# Generated data files
-data/*.xlsx
-data/*.xls
-data/*.csv
+# Local configuration
+.env
+.env.*
 
-# ==============================
-# Project specific files (NÃO subir para GitHub)
-# ==============================
-*Planejamento*
-gradi_app*
-todo dia*
-Logo/
-Ubuntu/
+# User-specific configuration and data files
+**/templates.json
+**/config.json
+**/cached_data/
 
-# System / Temporary files
+# OS specific
 .DS_Store
 Thumbs.db
-*.log
-*.tmp
+**/.claude/settings.local.json
+
+# Data folder (planilhas geradas)
+data/*.xlsx
+data/*.csv
+data/*.xls
+!data/.gitkeep
+
+# Ollama models cache (opcional)
+ollama_models/
