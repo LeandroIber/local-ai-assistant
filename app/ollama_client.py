@@ -1,6 +1,5 @@
 """
 Módulo responsável pela comunicação com o Ollama e Function Calling.
-Com suporte a confirmação pendente para salvar gastos (evita salvamentos sem autorização).
 """
 
 import ollama
@@ -13,9 +12,8 @@ from app.prompt import SYSTEM_PROMPT
 MODEL_NAME = "qwen3:8b"
 
 
-# ============================================================
+
 # ESTADO DE CONFIRMAÇÃO PENDENTE (por sessão)
-# ============================================================
 pending_expenses: List[Dict[str, Any]] = []
 
 
@@ -60,9 +58,7 @@ def chat_with_tools(messages: List[Dict[str, str]]) -> str:
         if messages and isinstance(messages[-1], dict) and messages[-1].get("role") == "user":
             last_user_message = messages[-1].get("content", "") or ""
 
-        # ============================================================
         # 1. Se há gastos pendentes, verifica se usuário confirmou ou cancelou
-        # ============================================================
         if pending_expenses:
             if _is_confirmation_message(last_user_message):
                 # Executa todos os gastos pendentes
@@ -103,9 +99,7 @@ def chat_with_tools(messages: List[Dict[str, str]]) -> str:
                     "Responda com 'sim', 'confirma' ou 'pode registrar' para salvar, ou 'não' para cancelar."
                 )
 
-        # ============================================================
         # 2. Fluxo normal: adiciona system prompt e chama o modelo
-        # ============================================================
         full_messages = [
             {"role": "system", "content": SYSTEM_PROMPT}
         ] + messages
