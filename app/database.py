@@ -1,7 +1,3 @@
-"""
-Módulo responsável pela conexão e operações com o banco de dados DuckDB.
-"""
-
 import duckdb
 from datetime import datetime, timedelta
 from pathlib import Path
