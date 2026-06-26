@@ -1,0 +1,18 @@
+local-ai-assistant/
+
+.gitignore
+LICENSE
+README.md
+requirements.txt
+
+main.py
+app/
+    __init__.py
+    tools.py
+    database.py
+    ollama_client.py
+
+data/
+    assistant.duckdb
+
+docs/

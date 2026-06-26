@@ -1,0 +1,49 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Local configuration
+.env
+.env.*
+
+# User-specific configuration and data files
+**/templates.json
+**/config.json
+**/cached_data/
+
+# OS specific
+.DS_Store
+Thumbs.db
+**/.claude/settings.local.json
+
+# Data folder (planilhas geradas)
+data/*.xlsx
+data/*.csv
+data/*.xls
+!data/.gitkeep
+
+# Ollama models cache (opcional)
+ollama_models/
