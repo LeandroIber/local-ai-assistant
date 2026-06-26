@@ -1,7 +1,3 @@
-"""
-Módulo responsável pela comunicação com o Ollama e Function Calling.
-"""
-
 import ollama
 from typing import List, Dict, Any, Optional
 from app.tools import save_expense, list_expenses, initialize_system, TOOLS
