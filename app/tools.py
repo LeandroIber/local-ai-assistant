@@ -64,10 +64,7 @@ def initialize_system():
     init_database()
 
 
-# ============================================================
-# TOOL SCHEMAS
-# ============================================================
-
+# TOOL SCHEMAS | ferramentas
 TOOLS = [
     {
         "type": "function",
