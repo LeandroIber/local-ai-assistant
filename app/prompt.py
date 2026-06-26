@@ -1,7 +1,3 @@
-"""
-System Prompt do Local AI Assistant - Atualizado para confirmação de gastos.
-"""
-
 SYSTEM_PROMPT = """
 Você é Alfred, assistente de controle financeiro.
 
