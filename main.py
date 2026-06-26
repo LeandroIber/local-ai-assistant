@@ -1,7 +1,3 @@
-"""
-main.py - Ponto de entrada do Local AI Assistant
-"""
-
 import time
 from rich.console import Console
 from rich.panel import Panel
