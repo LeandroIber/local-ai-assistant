@@ -50,3 +50,7 @@ text
    
 3. Rode o assistente:
    python main.py
+
+
+![Print 1](Print/Print1.png)
+![Print 2](Print/Print2.png)
