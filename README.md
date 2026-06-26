@@ -53,4 +53,5 @@ text
 
 
 ![Print 1](Print/Print1.png)
-![Print 2](Print/Print2.png)
+
+![Print 2](https://github.com/LeandroIber/local-ai-assistant/raw/main/Print/print2.png)
