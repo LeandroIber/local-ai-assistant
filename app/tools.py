@@ -1,7 +1,3 @@
-"""
-Módulo de ferramentas (tools) para o Local AI Assistant.
-"""
-
 from typing import Optional
 from app.database import init_database, insert_expense, get_expenses
 
