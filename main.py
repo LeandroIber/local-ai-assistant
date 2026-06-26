@@ -1,10 +1,5 @@
 """
-main.py - Ponto de entrada do Local AI Assistant (VERSÃO MELHORADA)
-
-Melhorias aplicadas:
-- Agora usa o SYSTEM_PROMPT correto do prompt.py (com regras de confirmação de gastos)
-- Adicionado cronômetro para medir tempo de resposta
-- Comentários marcados para fácil remoção posterior
+main.py - Ponto de entrada do Local AI Assistant
 """
 
 import time
@@ -27,9 +22,7 @@ def main():
         border_style="blue"
     ))
 
-    # ============================================================
-    # PROMPT DO SISTEMA (AGORA USANDO O CORRETO)
-    # ============================================================
+
     messages = [
         {
             "role": "system",
@@ -51,19 +44,12 @@ def main():
             # Adiciona mensagem do usuário ao histórico
             messages.append({"role": "user", "content": user_input})
 
-            # ============================================================
-            # CRONÔMETRO - Mede quanto tempo o assistente demora para responder
-            # TODO: REMOVER DEPOIS (se não quiser mais o timer)
-            # ============================================================
             start_time = time.time()
 
             with console.status("[bold blue]Pensando...[/bold blue]"):
                 assistant_response = chat_with_tools(messages)
 
             elapsed_time = time.time() - start_time
-            # ============================================================
-            # FIM DO CRONÔMETRO
-            # ============================================================
 
             # Mostra a resposta do assistente
             console.print(f"\n[bold cyan]Assistente[/bold cyan]: {assistant_response}")
