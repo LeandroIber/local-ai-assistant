@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 """
 ollama_client.py - Gerencia a comunicação com o Ollama e execução de ferramentas
 """
 
-=======
->>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 import ollama
 from typing import List, Dict, Any
 from app.tools import (
@@ -23,16 +20,10 @@ from app.prompt import SYSTEM_PROMPT
 MODEL_NAME = "qwen3:8b"
 
 
-<<<<<<< HEAD
 # Estado
 pending_transactions: List[Dict[str, Any]] = []
 user_name: str = None
 awaiting_name: bool = False
-=======
-
-# ESTADO DE CONFIRMAÇÃO PENDENTE (por sessão)
-pending_expenses: List[Dict[str, Any]] = []
->>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 
 
 def get_available_tools() -> List[Dict[str, Any]]:
@@ -101,13 +92,8 @@ def chat_with_tools(messages: List[Dict[str, str]]) -> str:
         if messages and messages[-1].get("role") == "user":
             last_user_message = messages[-1].get("content", "") or ""
 
-<<<<<<< HEAD
         # FLUXO DE CONFIRMAÇÃO DE TRANSAÇÕES
         if pending_transactions:
-=======
-        # 1. Se há gastos pendentes, verifica se usuário confirmou ou cancelou
-        if pending_expenses:
->>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
             if _is_confirmation_message(last_user_message):
                 results = []
                 for pend in pending_transactions:
@@ -136,7 +122,6 @@ def chat_with_tools(messages: List[Dict[str, str]]) -> str:
                     summaries.append(f"- {tipo}: {p['description']} - R$ {float(p['amount']):.2f}")
                 return "Transações pendentes:\n" + "\n".join(summaries) + "\n\nConfirma que posso registrar?"
 
-<<<<<<< HEAD
         # FLUXO DE BOAS-VINDAS / NOME DO USUÁRIO
         if not user_name:
             if not awaiting_name:
@@ -163,12 +148,6 @@ def chat_with_tools(messages: List[Dict[str, str]]) -> str:
             )
 
         full_messages = [{"role": "system", "content": personalized_prompt}] + messages
-=======
-        # 2. Fluxo normal: adiciona system prompt e chama o modelo
-        full_messages = [
-            {"role": "system", "content": SYSTEM_PROMPT}
-        ] + messages
->>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 
         response = ollama.chat(
             model=MODEL_NAME,
