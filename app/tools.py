@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 """
 tools.py - Ferramentas do Assistente Financeiro Local
 """
@@ -11,63 +10,6 @@ from app.database import (
     get_balance as db_get_balance,
     get_connection
 )
-=======
-from typing import Optional
-from app.database import init_database, insert_expense, get_expenses
-
-
-def save_expense(
-    description: str,
-    amount: float,
-    category: Optional[str] = None,
-    date: Optional[str] = None
-) -> str:
-    """
-    Salva um gasto no banco de dados.
-    IMPORTANTE: Esta ferramenta só deve ser chamada DEPOIS que o usuário confirmar explicitamente
-    com palavras como 'sim', 'confirma', 'pode registrar', etc.
-    """
-    try:
-        insert_expense(
-            description=description,
-            amount=amount,
-            category=category,
-            date=date
-        )
-
-        category_text = f" na categoria '{category}'" if category else ""
-        return f"Gasto de R$ {amount:.2f} ({description}){category_text} salvo com sucesso!"
-
-    except Exception as e:
-        return f"Erro ao salvar o gasto: {str(e)}"
-
-
-def list_expenses(limit: int = 5, category: Optional[str] = None) -> str:
-    """
-    Lista os gastos mais recentes, com opção de filtrar por categoria.
-    """
-    try:
-        expenses = get_expenses(limit=limit, category=category)
-
-        if not expenses:
-            if category:
-                return f"Nenhum gasto encontrado na categoria '{category}'."
-            return "Você ainda não possui gastos registrados."
-
-        if category:
-            response = f"Gastos na categoria '{category}' (últimos {len(expenses)}):\n\n"
-        else:
-            response = f"Seus {len(expenses)} gastos mais recentes:\n\n"
-
-        for exp in expenses:
-            cat = f" ({exp['category']})" if exp.get('category') else ""
-            response += f"• {exp['date']} - R$ {exp['amount']:.2f} - {exp['description']}{cat}\n"
-
-        return response.strip()
-
-    except Exception as e:
-        return f"Erro ao buscar os gastos: {str(e)}"
->>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 
 
 def initialize_system():
@@ -75,7 +17,6 @@ def initialize_system():
     init_database()
 
 
-<<<<<<< HEAD
 # FERRAMENTAS DE ESCRITA
 
 def save_transaction(
@@ -229,10 +170,6 @@ def get_category_summary() -> str:
 # LISTA DE FERRAMENTAS (para o LLM)
 
 TOOLS: List[Dict[str, Any]] = [
-=======
-# TOOL SCHEMAS | ferramentas
-TOOLS = [
->>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
     {
         "type": "function",
         "function": {
