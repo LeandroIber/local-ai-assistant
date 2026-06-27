@@ -1,9 +1,15 @@
+<<<<<<< HEAD
+"""
+main.py - Ponto de entrada do Local AI Assistant (Financeiro)
+"""
+
+=======
+>>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 import time
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 from app.ollama_client import chat_with_tools
-from app.prompt import SYSTEM_PROMPT   # <-- Importa o prompt correto com regras de segurança
 
 
 console = Console()
@@ -11,27 +17,33 @@ console = Console()
 
 def main():
     console.print(Panel.fit(
-        "[bold blue]Local AI Assistant[/bold blue]\n"
-        "Assistente pessoal com controle de gastos\n"
-        "Digite 'sair' para encerrar.",
-        title="Bem-vindo",
+        "[bold blue]Alfred > Assistente Financeiro[/bold blue]\n\n"
+        "Olá! Eu sou seu assistente pessoal de finanças.\n"
+        "Posso te ajudar a registrar suas compras e organizar seu balanço financeiro.\n\n"
+        "Digite [bold]\"sair\"[/bold] para encerrar.",
+        title="Olá,Bem-vindo!",
         border_style="blue"
     ))
 
+<<<<<<< HEAD
+    # Histórico da conversa (apenas user e assistant)
+    messages = []
+=======
 
     messages = [
         {
             "role": "system",
-            "content": SYSTEM_PROMPT   # <-- Usa o prompt rigoroso com regras de confirmação
+            "content": SYSTEM_PROMPT   
         }
     ]
+>>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 
     while True:
         try:
             user_input = Prompt.ask("\n[bold green]Você[/bold green]")
 
-            if user_input.lower() in ["sair", "exit", "quit"]:
-                console.print("[yellow]Até logo![/yellow]")
+            if user_input.lower().strip() in ["sair", "exit", "quit"]:
+                console.print("[yellow]Até logo! Seus dados estão salvos com segurança.[/yellow]")
                 break
 
             if not user_input.strip():
@@ -47,11 +59,11 @@ def main():
 
             elapsed_time = time.time() - start_time
 
-            # Mostra a resposta do assistente
-            console.print(f"\n[bold cyan]Assistente[/bold cyan]: {assistant_response}")
+            # Exibe resposta do assistente
+            console.print(f"\n[bold cyan]Alfred[/bold cyan]: {assistant_response}")
 
-            # Mostra o tempo de resposta (pode remover esta linha também)
-            console.print(f"[dim italic]⏱️  Tempo de resposta: {elapsed_time:.2f} segundos[/dim italic]")
+            # Tempo de resposta (útil em desenvolvimento)
+            console.print(f"[dim]  {elapsed_time:.2f}s[/dim]")
 
             # Adiciona resposta do assistente ao histórico
             messages.append({"role": "assistant", "content": assistant_response})
@@ -60,7 +72,7 @@ def main():
             console.print("\n[yellow]Programa interrompido pelo usuário.[/yellow]")
             break
         except Exception as e:
-            console.print(f"[red]Erro:[/red] {str(e)}")
+            console.print(f"[red]Erro inesperado:[/red] {str(e)}")
 
 
 if __name__ == "__main__":
