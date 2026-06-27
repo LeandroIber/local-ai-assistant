@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 """
 main.py - Ponto de entrada do Local AI Assistant (Financeiro)
 """
 
-=======
->>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 import time
 from rich.console import Console
 from rich.panel import Panel
@@ -18,25 +15,15 @@ console = Console()
 def main():
     console.print(Panel.fit(
         "[bold blue]Alfred > Assistente Financeiro[/bold blue]\n\n"
-        "Olá! Eu sou seu assistente pessoal de finanças.\n"
+        "Olá! Eu soua seu assistente pessoal de finanças.\n"
         "Posso te ajudar a registrar suas compras e organizar seu balanço financeiro.\n\n"
         "Digite [bold]\"sair\"[/bold] para encerrar.",
         title="Olá,Bem-vindo!",
         border_style="blue"
     ))
 
-<<<<<<< HEAD
     # Histórico da conversa (apenas user e assistant)
     messages = []
-=======
-
-    messages = [
-        {
-            "role": "system",
-            "content": SYSTEM_PROMPT   
-        }
-    ]
->>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 
     while True:
         try:
