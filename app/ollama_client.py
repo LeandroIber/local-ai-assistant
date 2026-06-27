@@ -1,104 +1,174 @@
+<<<<<<< HEAD
+"""
+ollama_client.py - Gerencia a comunicação com o Ollama e execução de ferramentas
+"""
+
+=======
+>>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 import ollama
-from typing import List, Dict, Any, Optional
-from app.tools import save_expense, list_expenses, initialize_system, TOOLS
+from typing import List, Dict, Any
+from app.tools import (
+    save_transaction,
+    list_transactions,
+    get_balance,
+    get_monthly_summary,
+    get_category_summary,
+    initialize_system,
+    TOOLS
+)
+from app.database import get_user_setting, save_user_setting
 from app.prompt import SYSTEM_PROMPT
 
 
-# Nome do modelo
 MODEL_NAME = "qwen3:8b"
 
 
+<<<<<<< HEAD
+# Estado
+pending_transactions: List[Dict[str, Any]] = []
+user_name: str = None
+awaiting_name: bool = False
+=======
 
 # ESTADO DE CONFIRMAÇÃO PENDENTE (por sessão)
 pending_expenses: List[Dict[str, Any]] = []
+>>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 
 
 def get_available_tools() -> List[Dict[str, Any]]:
     return TOOLS
 
 
+def _safe_text(text: str) -> str:
+    """Versão mais robusta para evitar erro de encoding/surrogates."""
+    if not text:
+        return ""
+    try:
+        # Remove caracteres surrogates e inválidos de forma agressiva
+        text = text.encode("utf-8", errors="ignore").decode("utf-8", errors="ignore")
+        # Remove caracteres problemáticos remanescentes
+        text = text.replace("\udc00", "").replace("\udc01", "").replace("\udc02", "")
+        return text.strip()
+    except Exception:
+        return ""
+
+
 def _is_confirmation_message(text: str) -> bool:
-    """Verifica se a mensagem do usuário é uma confirmação afirmativa."""
     if not text:
         return False
     text_lower = text.lower().strip()
-    confirmation_keywords = [
-        "sim", "confirma", "confirmo", "pode registrar", "pode", "ok", "yes",
-        "confirmar", "registra", "salva", "salvar", "registra aí", "pode sim",
-        "afirmativo", "beleza", "fechado", "vai", "manda"
-    ]
-    return any(kw in text_lower for kw in confirmation_keywords)
+    keywords = ["sim", "confirma", "pode registrar", "ok", "pode", "yes", "registra", "salva"]
+    return any(kw in text_lower for kw in keywords)
 
 
 def _is_cancel_message(text: str) -> bool:
-    """Verifica se a mensagem é para cancelar gastos pendentes."""
     if not text:
         return False
     text_lower = text.lower().strip()
-    cancel_keywords = ["não", "nao", "cancelar", "cancela", "esquece", "não confirma", "cancel"]
-    return any(kw in text_lower for kw in cancel_keywords)
+    keywords = ["nao", "cancelar", "cancela", "esquece"]
+    return any(kw in text_lower for kw in keywords)
+
+
+def _extract_name(raw_text: str) -> str:
+    """Extrai o nome do usuário de forma inteligente."""
+    text = raw_text.strip().lower()
+
+    prefixes = [
+        "me chame de", "pode me chamar de", "meu nome é",
+        "é só me chamar de", "me chama de", "chama de",
+        "pode chamar de", "me chame só de"
+    ]
+
+    for prefix in prefixes:
+        if text.startswith(prefix):
+            text = text.replace(prefix, "", 1).strip()
+            break
+
+    text = text.strip(" '\".,!?").title()
+    return text
 
 
 def chat_with_tools(messages: List[Dict[str, str]]) -> str:
-    """
-    Envia mensagens para o Ollama e processa Function Calling quando necessário.
-    Implementa fluxo de confirmação para save_expense.
-    """
-    global pending_expenses
+    global pending_transactions, user_name, awaiting_name
 
     try:
         initialize_system()
 
-        # Extrai última mensagem do usuário (para checar confirmação/cancelamento)
+        if user_name is None:
+            user_name = get_user_setting("user_name")
+
         last_user_message = ""
-        if messages and isinstance(messages[-1], dict) and messages[-1].get("role") == "user":
+        if messages and messages[-1].get("role") == "user":
             last_user_message = messages[-1].get("content", "") or ""
 
+<<<<<<< HEAD
+        # FLUXO DE CONFIRMAÇÃO DE TRANSAÇÕES
+        if pending_transactions:
+=======
         # 1. Se há gastos pendentes, verifica se usuário confirmou ou cancelou
         if pending_expenses:
+>>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
             if _is_confirmation_message(last_user_message):
-                # Executa todos os gastos pendentes
                 results = []
-                for pend in pending_expenses:
-                    result = save_expense(
+                for pend in pending_transactions:
+                    result = save_transaction(
                         description=pend.get("description", ""),
                         amount=float(pend.get("amount", 0)),
+                        type_=pend.get("type_", "expense"),
                         category=pend.get("category"),
                         date=pend.get("date")
                     )
                     results.append(result)
 
-                count = len(pending_expenses)
-                pending_expenses.clear()
-
-                if count == 1:
-                    return results[0]
-                else:
-                    header = f"✅ {count} gastos registrados com sucesso:\n"
-                    return header + "\n".join(f"• {r}" for r in results)
+                count = len(pending_transactions)
+                pending_transactions.clear()
+                return "\n".join(results) if count == 1 else f"{count} transações registradas com sucesso."
 
             elif _is_cancel_message(last_user_message):
-                count = len(pending_expenses)
-                pending_expenses.clear()
-                return f"❌ Ok, cancelei. Nenhum dos {count} gasto(s) foi registrado."
+                count = len(pending_transactions)
+                pending_transactions.clear()
+                return f"Cancelei. Nenhuma das {count} transações foi registrada."
 
             else:
-                # Ainda há pendentes mas usuário não confirmou nem cancelou
-                # Relembra a confirmação (não chama LLM ainda)
                 summaries = []
-                for p in pending_expenses:
-                    cat = f" ({p['category']})" if p.get("category") else ""
-                    summaries.append(f"• {p['description']} - R$ {float(p['amount']):.2f}{cat}")
-                summary_text = "\n".join(summaries)
-                return (
-                    f"Ainda tenho estes gastos pendentes de confirmação:\n{summary_text}\n\n"
-                    "Responda com 'sim', 'confirma' ou 'pode registrar' para salvar, ou 'não' para cancelar."
-                )
+                for p in pending_transactions:
+                    tipo = "Entrada" if p.get("type_") == "income" else "Gasto"
+                    summaries.append(f"- {tipo}: {p['description']} - R$ {float(p['amount']):.2f}")
+                return "Transações pendentes:\n" + "\n".join(summaries) + "\n\nConfirma que posso registrar?"
 
+<<<<<<< HEAD
+        # FLUXO DE BOAS-VINDAS / NOME DO USUÁRIO
+        if not user_name:
+            if not awaiting_name:
+                awaiting_name = True
+                return (
+                    "Olá! Eu sou o Alfred, seu assistente financeiro pessoal.\n\n"
+                    "Para eu te atender melhor, como posso te chamar?"
+                )
+            else:
+                name = _extract_name(last_user_message)
+                if len(name) < 2:
+                    return "Por favor, me diga um nome válido."
+                save_user_setting("user_name", name)
+                user_name = name
+                awaiting_name = False
+                return f"Prazer em te conhecer, **{user_name}**! Como posso te ajudar hoje?"
+
+        # FLUXO NORMAL
+        personalized_prompt = SYSTEM_PROMPT
+        if user_name:
+            personalized_prompt = (
+                f"Você está conversando com {user_name}. "
+                f"Use o nome dele nas respostas quando fizer sentido.\n\n" + SYSTEM_PROMPT
+            )
+
+        full_messages = [{"role": "system", "content": personalized_prompt}] + messages
+=======
         # 2. Fluxo normal: adiciona system prompt e chama o modelo
         full_messages = [
             {"role": "system", "content": SYSTEM_PROMPT}
         ] + messages
+>>>>>>> 5f93860eec3870247edb386fb850eac2bb481d92
 
         response = ollama.chat(
             model=MODEL_NAME,
@@ -107,62 +177,51 @@ def chat_with_tools(messages: List[Dict[str, str]]) -> str:
             think=False
         )
 
-        # Se o modelo decidiu usar alguma ferramenta
         if response.message.tool_calls:
-            # Verificamos se há chamada para save_expense (precisa de confirmação)
-            save_calls = []
-            list_results = []
-
             for tool_call in response.message.tool_calls:
-                function_name = tool_call.function.name
-                arguments = tool_call.function.arguments or {}
+                name = tool_call.function.name
+                args = tool_call.function.arguments or {}
 
-                if function_name == "save_expense":
-                    # NÃO executamos ainda! Guardamos como pendente.
+                if name == "save_transaction":
                     pend = {
-                        "description": arguments.get("description", ""),
-                        "amount": arguments.get("amount", 0),
-                        "category": arguments.get("category"),
-                        "date": arguments.get("date")
+                        "description": args.get("description", ""),
+                        "amount": args.get("amount", 0),
+                        "type_": args.get("type_", "expense"),
+                        "category": args.get("category"),
+                        "date": args.get("date")
                     }
-                    pending_expenses.append(pend)
-                    save_calls.append(pend)
+                    pending_transactions.append(pend)
 
-                elif function_name == "list_expenses":
-                    # list_expenses é imediato, executamos agora
-                    result = list_expenses(
-                        limit=arguments.get("limit", 5),
-                        category=arguments.get("category")
+                elif name == "list_transactions":
+                    return list_transactions(
+                        limit=args.get("limit", 10),
+                        type_=args.get("type_"),
+                        category=args.get("category")
                     )
-                    list_results.append(result)
 
-            # Se houve chamada de save_expense → pedimos confirmação (sem salvar ainda)
-            if save_calls:
+                elif name == "get_balance":
+                    return get_balance()
+
+                elif name == "get_monthly_summary":
+                    return get_monthly_summary()
+
+                elif name == "get_category_summary":
+                    return get_category_summary()
+
+            if pending_transactions:
                 summaries = []
-                for p in save_calls:
-                    cat_text = f" na categoria '{p['category']}'" if p.get("category") else ""
-                    date_text = f" ({p['date']})" if p.get("date") else ""
-                    summaries.append(f"• {p['description']} - R$ {float(p['amount']):.2f}{cat_text}{date_text}")
+                for p in pending_transactions:
+                    tipo = "Entrada" if p.get("type_") == "income" else "Gasto"
+                    summaries.append(f"- {tipo}: {p['description']} - R$ {float(p['amount']):.2f}")
+                return "Identifiquei as seguintes transações:\n" + "\n".join(summaries) + "\n\nConfirma que posso registrar?"
 
-                summary_text = "\n".join(summaries)
-                plural = "s" if len(save_calls) > 1 else ""
-                return (
-                    f"Identifiquei o{plural} seguinte{plural} gasto{plural}:\n{summary_text}\n\n"
-                    "Confirma que posso registrar? Responda 'sim', 'confirma' ou 'pode registrar'."
-                )
-
-            # Se só houve list_expenses (sem save), retornamos o resultado diretamente
-            if list_results:
-                return list_results[0] if len(list_results) == 1 else "\n\n".join(list_results)
-
-            # Caso raro de outras tools
             return "Operação processada."
 
-        # Se não usou ferramenta, retorna a resposta normal do modelo
-        return response.message.content or "Desculpe, não entendi sua solicitação."
+        return _safe_text(response.message.content) or "Não entendi."
 
     except Exception as e:
-        # Limpa pendentes em caso de erro grave para evitar loop
-        if pending_expenses:
-            pending_expenses.clear()
-        return f"Erro ao comunicar com o Ollama: {str(e)}"
+        if pending_transactions:
+            pending_transactions.clear()
+        # Retorna mensagem de erro limpa
+        error_msg = str(e)
+        return f"Erro: {error_msg[:200]}" if len(error_msg) > 200 else f"Erro: {error_msg}"
